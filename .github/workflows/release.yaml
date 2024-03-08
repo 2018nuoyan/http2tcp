@@ -17,8 +17,10 @@ jobs:
         run: |
           CGO_ENABLED=0 GOOS=linux  GOARCH=amd64 go build -o .build/http2tcp-linux-amd64
           CGO_ENABLED=0 GOOS=linux  GOARCH=arm64 go build -o .build/http2tcp-linux-arm64
-          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o .build/http2tcp-darwin-amd64
-          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o .build/http2tcp-darwin-arm64
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o .build/http2tcp-windows-amd64
+          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o .build/http2tcp-windows-arm64
+          CGO_ENABLED=0 GOOS=linux GOARCH=mipsle go build -o .build/http2tcp-linux-mipsle
+          CGO_ENABLED=0 GOOS=linux GOARCH=mips go build -o .build/http2tcp-linux-mips
       - name: Generate body
         run: |
           echo '**Build At**:
