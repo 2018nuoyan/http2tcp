@@ -36,7 +36,7 @@ func NewClient(server string, publicKey PublicKey) *Client {
 // If non-empty, when connecting to the server, this User-Agent will be used
 // instead of the default `Go-http-client/1.1`.
 func (c *Client) SetUserAgent(userAgent string) {
-	c.userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
+	c.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 }
 
 func (c *Client) Std(to string) {
