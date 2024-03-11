@@ -24,7 +24,7 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -ldflags="-s -w" -o .build/http2tcp-linux-arm
     
         
-      - name: Generate body
+      - name: Generate body and compression
         run: |
           sudo -E apt-get -y install upx
           chmod +x .build/*
