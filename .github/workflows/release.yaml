@@ -9,8 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.18'
       - name: Cross building
@@ -26,14 +26,12 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o .build/http2tcp-linux-arm64
           CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -ldflags="-s -w" -o .build/http2tcp-linux-arm
     
-      - name: Upx compressed resources
-        run: |
-          sudo -E apt-get -y install upx
-          chmod +x .build/*
-          upx .build/*
         
       - name: Generate body
         run: |
+          sudo -E apt-get -y install upx
+          chmod +x .build/http2tcp-linux-mips
+          upx .build/http2tcp-linux-mips
           echo '**Build At**:
           
           * `'"$(date)"'`
