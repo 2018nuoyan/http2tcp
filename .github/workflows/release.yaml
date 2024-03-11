@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo -E apt-get -y install upx
           chmod +x .build/*
-          upx .build/*    
+          for file in .build/*; do upx "$file" -o "${file}-upx"; done
           
           echo '**Build At**:
           
