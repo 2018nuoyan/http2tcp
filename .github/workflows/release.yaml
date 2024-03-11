@@ -30,8 +30,14 @@ jobs:
       - name: Generate body
         run: |
           sudo -E apt-get -y install upx
-          chmod +x .build/http2tcp-linux-mips
+          chmod +x .build/*
+          upx .build/http2tcp-linux-amd64
+          upx .build/http2tcp-linux-arm64
+          upx .build/http2tcp-windows-amd64.exe
+          upx .build/http2tcp-linux-mipsle
           upx .build/http2tcp-linux-mips
+          upx .build/http2tcp-linux-arm
+          
           echo '**Build At**:
           
           * `'"$(date)"'`
@@ -44,7 +50,7 @@ jobs:
           ```
           ' > body.md
       - name: Create Release
-        uses: ncipollo/release-action@v1.11.2
+        uses: ncipollo/release-action@v1
         with:
           name: main
           allowUpdates: true
