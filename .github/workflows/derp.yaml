@@ -9,51 +9,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 检出当前项目源码
       - uses: actions/checkout@v4
       
-      # 设置 Go 环境
       - uses: actions/setup-go@v5
         with:
           go-version: '1.23'
 
-      # 下载 Tailscale 源码
       - name: Download Tailscale source
         run: |
           git clone https://github.com/tailscale/tailscale.git
           cd tailscale
-          git checkout main  # 或者指定某个稳定版本
+          git checkout main
 
-      # 交叉编译 DERP 服务器
       - name: Cross building DERP server
         run: |
           mkdir -p .build
           cd tailscale/cmd/derper
-          
-          # 编译不同架构的二进制文件
-          CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w" -o ../../.build/derp-linux-amd64
-          CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w" -o ../../.build/derp-linux-arm64
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../../.build/derp-windows-amd64.exe
-          CGO_ENABLED=0 GOOS=linux   GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-s -w" -o ../../.build/derp-linux-mipsle
-          CGO_ENABLED=0 GOOS=linux   GOARCH=mips   GOMIPS=softfloat go build -ldflags="-s -w" -o ../../.build/derp-linux-mips
-          CGO_ENABLED=0 GOOS=linux   GOARCH=arm    go build -ldflags="-s -w" -o ../../.build/derp-linux-arm
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../.build/derp-linux-amd64
+          # 添加其他架构编译命令...
 
-
-      # 生成 Release 说明文件
-      - name: Generate release body and checksums
+      - name: Verify build output
         run: |
-          echo '**Build At**:
-          
-          * `'"$(date)"'`
-          * `'"$(TZ=Asia/Shanghai date)"'`
-          
-          **sha256sum**:
+          echo "Files in .build directory:"
+          ls -lah .build
 
-          ```-
-          '"$(cd .build && sha256sum *)"'
-          ```' > body.md
+      - name: Compress binaries with UPX
+        run: |
+          wget https://github.com/upx/upx/releases/download/v4.2.2/upx-4.2.2-amd64_linux.tar.xz
+          tar -xJf upx-4.2.2-amd64_linux.tar.xz --strip-components=1 -C .build
+          chmod +x .build/upx
+          find .build -type f -name 'derp-*' -exec .build/upx --ultra-brute {} \;
 
-      # 创建发布
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
@@ -61,7 +47,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           replacesArtifacts: true
-          artifacts: .build/*
+          artifacts: ".build/derp-*"
           commit: main
           tag: derp-release-main-latest
           bodyFile: body.md
