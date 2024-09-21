@@ -15,7 +15,7 @@ jobs:
       # 设置 Go 环境
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.18'
+          go-version: '1.23'
 
       # 下载 Tailscale 源码
       - name: Download Tailscale source
