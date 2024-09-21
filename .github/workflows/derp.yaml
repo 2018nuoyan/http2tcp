@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 检出源码
+      # 检出当前项目源码
       - uses: actions/checkout@v4
       
       # 设置 Go 环境
@@ -17,17 +17,26 @@ jobs:
         with:
           go-version: '1.18'
 
+      # 下载 Tailscale 源码
+      - name: Download Tailscale source
+        run: |
+          git clone https://github.com/tailscale/tailscale.git
+          cd tailscale
+          git checkout main  # 或者指定某个稳定版本
+
       # 交叉编译 DERP 服务器
       - name: Cross building DERP server
         run: |
           mkdir -p .build
+          cd tailscale/cmd/derper
+          
           # 编译不同架构的二进制文件
-          CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w" -o .build/derp-linux-amd64 ./cmd/derper
-          CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w" -o .build/derp-linux-arm64 ./cmd/derper
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o .build/derp-windows-amd64.exe ./cmd/derper
-          CGO_ENABLED=0 GOOS=linux   GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-s -w" -o .build/derp-linux-mipsle ./cmd/derper
-          CGO_ENABLED=0 GOOS=linux   GOARCH=mips   GOMIPS=softfloat go build -ldflags="-s -w" -o .build/derp-linux-mips ./cmd/derper
-          CGO_ENABLED=0 GOOS=linux   GOARCH=arm    go build -ldflags="-s -w" -o .build/derp-linux-arm ./cmd/derper
+          CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w" -o ../../.build/derp-linux-amd64
+          CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w" -o ../../.build/derp-linux-arm64
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../../.build/derp-windows-amd64.exe
+          CGO_ENABLED=0 GOOS=linux   GOARCH=mipsle GOMIPS=softfloat go build -ldflags="-s -w" -o ../../.build/derp-linux-mipsle
+          CGO_ENABLED=0 GOOS=linux   GOARCH=mips   GOMIPS=softfloat go build -ldflags="-s -w" -o ../../.build/derp-linux-mips
+          CGO_ENABLED=0 GOOS=linux   GOARCH=arm    go build -ldflags="-s -w" -o ../../.build/derp-linux-arm
 
       # 下载 UPX 并进行压缩
       - name: Compress binaries with UPX
