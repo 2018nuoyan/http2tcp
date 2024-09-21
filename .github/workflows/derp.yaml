@@ -38,16 +38,6 @@ jobs:
           CGO_ENABLED=0 GOOS=linux   GOARCH=mips   GOMIPS=softfloat go build -ldflags="-s -w" -o ../../.build/derp-linux-mips
           CGO_ENABLED=0 GOOS=linux   GOARCH=arm    go build -ldflags="-s -w" -o ../../.build/derp-linux-arm
 
-      # 下载 UPX 并进行压缩
-      - name: Compress binaries with UPX
-        run: |
-          wget https://github.com/upx/upx/releases/download/v4.2.2/upx-4.2.2-amd64_linux.tar.xz
-          tar -xJf upx-4.2.2-amd64_linux.tar.xz --strip-components=1 -C .build
-          chmod +x .build/upx
-          
-          # 使用 UPX 压缩所有二进制文件
-          chmod +x .build/*
-          .build/upx --ultra-brute .build/*
 
       # 生成 Release 说明文件
       - name: Generate release body and checksums
