@@ -49,7 +49,7 @@ $ ./http2tcp -s -l SERVER_IP_OR_DOMAIN:2222 -k gKOg8zeuuB73X9FBgMb-xAUGxnv8x7y6W
 Specify server PublicKey to use with `-k` option:
 
 ```shell-session
-$ ./http2tcp -c -d localhost:22 -e $SERVER_IP_OR_DOMAIN:2222 -k XOK89m7YytIM2NjfhqAe4FoUHVWabjmOF3eVpnFnb28
+$ ./http2tcp -c -l 127.0.0.1:22 -d localhost:22 -e $SERVER_IP_OR_DOMAIN:2222 -k XOK89m7YytIM2NjfhqAe4FoUHVWabjmOF3eVpnFnb28
 SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.3
 ```
 
